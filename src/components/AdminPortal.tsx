@@ -360,9 +360,9 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ user, onLogout }) => {
       setUsers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
     }, (error) => handleFirestoreError(error, OperationType.LIST, "users"));
 
-    const unsubClients = onSnapshot(collection(db, "clients"), (snapshot) => {
+    const unsubClients = onSnapshot(query(collection(db, "users"), where("role", "==", "client")), (snapshot) => {
       setClients(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (error) => handleFirestoreError(error, OperationType.LIST, "clients"));
+    }, (error) => handleFirestoreError(error, OperationType.LIST, "users"));
 
     const unsubJobs = onSnapshot(query(collection(db, "jobs"), orderBy("completedAt", "desc")), (snapshot) => {
       setJobs(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));

@@ -3644,6 +3644,7 @@ const AppContent = () => {
       whatsappCountryCode: data.whatsappCountryCode || '',
       profilePic: data.profilePic || null,
       cvFile: data.cvFile || null,
+      idFile: data.idFile || null,
       createdAt: serverTimestamp(),
       lastLogin: serverTimestamp()
     };

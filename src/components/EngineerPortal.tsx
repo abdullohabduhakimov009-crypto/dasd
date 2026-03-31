@@ -35,6 +35,7 @@ import {
   HiBars3 as Menu, 
   HiXMark as X, 
   HiChevronRight as ChevronRight, 
+  HiArrowRight as ArrowRight,
   HiMapPin as MapPin, 
   HiBriefcase as Briefcase, 
   HiStar as Star, 
@@ -1256,12 +1257,13 @@ const EngineerPortal: React.FC<EngineerPortalProps> = ({ user, onLogout }) => {
                     { label: pt.profile.stats.fullDayRate, value: `${user?.currency === 'EUR' ? '€' : '$'}${user?.fullDayRate ?? '0'}/8h`, icon: DollarSign, name: 'fullDayRate' },
                     { label: pt.profile.stats.experience, value: `${user?.experience ?? '0'}+ Years`, icon: Clock, name: 'experience' },
                     { label: pt.profile.stats.success, value: `${user?.successRate || '100'}%`, icon: CheckCircle2 },
+                    { label: 'Identification', value: user?.idFile ? 'Uploaded' : 'Not Uploaded', icon: FileText, isFile: true, fileUrl: user?.idFile },
                   ].map((stat, i) => (
-                    <div key={i} className="bg-white border border-gray-200 rounded-2xl p-6 flex items-center gap-4 shadow-sm">
+                    <div key={i} className="bg-white border border-gray-200 rounded-2xl p-6 flex items-center gap-4 shadow-sm relative">
                       <div className="w-12 h-12 bg-brand-teal/10 rounded-xl flex items-center justify-center">
                         <stat.icon className="w-6 h-6 text-brand-teal" />
                       </div>
-                      <div>
+                      <div className="flex-1 min-w-0">
                         <div className="text-xs text-gray-400 uppercase tracking-widest font-bold mb-1">{stat.label}</div>
                         {isEditing && stat.name ? (
                           <div className="flex items-center gap-1">
@@ -1290,7 +1292,20 @@ const EngineerPortal: React.FC<EngineerPortalProps> = ({ user, onLogout }) => {
                             )}
                           </div>
                         ) : (
-                          <div className="text-xl font-bold">{stat.value}</div>
+                          <div className="flex items-center gap-2">
+                            <div className="text-xl font-bold truncate">{stat.value}</div>
+                            {stat.isFile && stat.fileUrl && (
+                              <a 
+                                href={stat.fileUrl} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="p-1.5 bg-slate-100 text-slate-600 rounded-lg hover:bg-brand-teal hover:text-brand-dark transition-all"
+                                title="View Document"
+                              >
+                                <ArrowRight className="w-3 h-3" />
+                              </a>
+                            )}
+                          </div>
                         )}
                       </div>
                     </div>

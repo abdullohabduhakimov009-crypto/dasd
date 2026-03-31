@@ -54,21 +54,97 @@
     },
     "Job": {
       "title": "Job",
+      "description": "A completed or active job",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "status": { "type": "string" },
+        "completedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "JobPosting": {
+      "title": "Job Posting",
       "description": "A job opportunity posted by an admin",
       "type": "object",
       "properties": {
-        "title": { "type": "string", "description": "Job title" },
-        "description": { "type": "string", "description": "Job description" },
-        "status": { "type": "string", "enum": ["Active", "Closed", "Draft"], "description": "Job status" },
-        "country": { "type": "string", "description": "Country" },
-        "city": { "type": "string", "description": "City" },
-        "rate": { "type": "string", "description": "Payment rate" },
-        "currency": { "type": "string", "description": "Currency" },
-        "serviceType": { "type": "string", "description": "Service type" },
-        "technicianType": { "type": "string", "description": "Technician type" },
-        "createdAt": { "type": "string", "format": "date-time", "description": "Posting time" }
-      },
-      "required": ["title", "status"]
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "A billing invoice",
+      "type": "object",
+      "properties": {
+        "clientName": { "type": "string" },
+        "amount": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Quotation": {
+      "title": "Quotation",
+      "description": "A service quotation",
+      "type": "object",
+      "properties": {
+        "amount": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Opportunity": {
+      "title": "Opportunity",
+      "description": "A business opportunity",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "A user notification",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "read": { "type": "boolean" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Activity": {
+      "title": "Activity",
+      "description": "A system activity log",
+      "type": "object",
+      "properties": {
+        "type": { "type": "string" },
+        "description": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      }
+    },
+    "PaymentAdvice": {
+      "title": "Payment Advice",
+      "description": "Payment advice submitted by a client",
+      "type": "object",
+      "properties": {
+        "transactionId": { "type": "string" },
+        "amount": { "type": "string" },
+        "date": { "type": "string" },
+        "status": { "type": "string" }
+      }
+    },
+    "Presence": {
+      "title": "Presence",
+      "description": "User presence status",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "status": { "type": "string" },
+        "lastSeen": { "type": "string", "format": "date-time" }
+      }
     },
     "Application": {
       "title": "Application",
@@ -99,7 +175,16 @@
   "firestore": {
     "/users/{userId}": { "schema": "User", "description": "User profiles" },
     "/tickets/{ticketId}": { "schema": "Ticket", "description": "Service tickets" },
-    "/jobs/{jobId}": { "schema": "Job", "description": "Job opportunities" },
+    "/jobs/{jobId}": { "schema": "Job", "description": "Completed or active jobs" },
+    "/job_postings/{jobPostingId}": { "schema": "JobPosting", "description": "Job opportunities" },
+    "/invoices/{invoiceId}": { "schema": "Invoice", "description": "Billing invoices" },
+    "/quotations/{quotationId}": { "schema": "Quotation", "description": "Service quotations" },
+    "/opportunities/{opportunityId}": { "schema": "Opportunity", "description": "Business opportunities" },
+    "/notifications/{notificationId}": { "schema": "Notification", "description": "System notifications" },
+    "/users/{userId}/notifications/{notificationId}": { "schema": "Notification", "description": "User notifications" },
+    "/activities/{activityId}": { "schema": "Activity", "description": "System activity logs" },
+    "/payment_advice/{adviceId}": { "schema": "PaymentAdvice", "description": "Payment advice submissions" },
+    "/presence/{presenceId}": { "schema": "Presence", "description": "User presence status" },
     "/applications/{applicationId}": { "schema": "Application", "description": "Job applications" },
     "/messages/{messageId}": { "schema": "Message", "description": "Chat messages" }
   }

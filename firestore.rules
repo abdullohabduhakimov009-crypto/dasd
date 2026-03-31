@@ -131,6 +131,52 @@ service cloud.firestore {
       allow write: if isAdmin() && isValidJob(request.resource.data);
     }
 
+    match /job_postings/{jobPostingId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /invoices/{invoiceId} {
+      allow read: if isAuthenticated() && (isAdmin() || request.auth.uid == resource.data.clientUid || request.auth.token.email == resource.data.clientEmail);
+      allow write: if isAdmin();
+    }
+
+    match /quotations/{quotationId} {
+      allow read: if isAuthenticated() && (isAdmin() || request.auth.uid == resource.data.clientUid);
+      allow write: if isAdmin();
+    }
+
+    match /opportunities/{opportunityId} {
+      allow read: if isAuthenticated();
+      allow create: if isClient();
+      allow update, delete: if isAdmin();
+    }
+
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (isAdmin() || request.auth.uid == resource.data.userId);
+    }
+
+    match /users/{userId}/notifications/{notificationId} {
+      allow read, write: if isOwner(userId) || isAdmin();
+    }
+
+    match /activities/{activityId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+    }
+
+    match /payment_advice/{adviceId} {
+      allow read: if isAdmin();
+      allow create: if isClient();
+    }
+
+    match /presence/{presenceId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
     match /applications/{applicationId} {
       function isValidApplication(data) {
         return data.jobId is string && data.engineerId is string &&
@@ -152,8 +198,8 @@ service cloud.firestore {
       allow read: if isAuthenticated() && (request.auth.uid == resource.data.senderId || request.auth.uid == resource.data.receiverId || isAdmin());
       allow create: if isAuthenticated() && isValidMessage(request.resource.data) && request.resource.data.senderId == request.auth.uid;
       allow update: if isAuthenticated() && (request.auth.uid == resource.data.senderId || request.auth.uid == resource.data.receiverId) && 
-                      hasOnlyAllowedFields(resource.data.keys().concat(['read'])) &&
-                      request.resource.data.read is bool;
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['read', 'unread']) &&
+                      (request.resource.data.read is bool || request.resource.data.unread is bool);
       allow delete: if isAdmin();
     }
 
