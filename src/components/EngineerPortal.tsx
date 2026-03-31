@@ -71,7 +71,6 @@ import LogoutConfirmModal from './LogoutConfirmModal';
 import MessagingSystem from './MessagingSystem';
 import ActivityFeed from './ActivityFeed';
 import SettingsView from './SettingsView';
-import { useLanguage } from '../context/LanguageContext';
 import { useNotifications } from '../context/NotificationContext';
 
 import TicketDetailView from './TicketDetailView';
@@ -84,7 +83,6 @@ interface EngineerPortalProps {
 }
 
 const EngineerPortal: React.FC<EngineerPortalProps> = ({ user, onLogout }) => {
-  const { t, language, setLanguage } = useLanguage();
   const { addNotification } = useNotifications();
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem('desklink_engineer_activeTab') || 'dashboard');
 

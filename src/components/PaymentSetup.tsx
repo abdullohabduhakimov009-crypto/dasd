@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { db, updateDoc, doc } from '../firebase';
-import { useLanguage } from '../context/LanguageContext';
 import { useNotifications } from '../context/NotificationContext';
 import { motion } from 'framer-motion';
 import { HiCreditCard, HiBuildingLibrary, HiUser, HiHashtag, HiMapPin, HiGlobeAlt } from 'react-icons/hi2';
@@ -11,7 +10,6 @@ interface PaymentSetupProps {
 }
 
 const PaymentSetup: React.FC<PaymentSetupProps> = ({ user, onComplete }) => {
-  const { t } = useLanguage();
   const { addNotification } = useNotifications();
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({

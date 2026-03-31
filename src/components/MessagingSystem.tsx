@@ -37,7 +37,6 @@ import {
 } from '../firebase';
 
 import { useNotifications } from '../context/NotificationContext';
-import { useLanguage } from '../context/LanguageContext';
 import { translateMessage, getAIChatResponse } from '../services/aiService';
 import { HiLanguage as TranslateIcon } from 'react-icons/hi2';
 
@@ -741,7 +740,6 @@ const ChatUserItem = React.memo(({ user, isSelected, isOnline, unreadCount, isSi
 });
 
 const MessageItem = React.memo(({ message, isMe, otherUserPhoto, onDelete, formatDate }: any) => {
-  const { language, t } = useLanguage();
   const [translatedText, setTranslatedText] = useState<string | null>(null);
   const [isTranslating, setIsTranslating] = useState(false);
 
@@ -753,7 +751,7 @@ const MessageItem = React.memo(({ message, isMe, otherUserPhoto, onDelete, forma
 
     setIsTranslating(true);
     try {
-      const targetLang = language === 'en' ? 'English' : language === 'ru' ? 'Russian' : 'Uzbek';
+      const targetLang = 'English';
       const result = await translateMessage(message.content, targetLang);
       setTranslatedText(result);
     } catch (error) {

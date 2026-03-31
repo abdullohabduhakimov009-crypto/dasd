@@ -87,7 +87,6 @@ import { FileUpload } from './FileUpload';
 import ReactMarkdown from 'react-markdown';
 import QuotationPortal from './QuotationPortal';
 import { PremiumButton } from './PremiumButton';
-import { useLanguage } from '../context/LanguageContext';
 import { useNotifications } from '../context/NotificationContext';
 import { 
   auth,
@@ -253,7 +252,6 @@ interface AdminPortalProps {
 }
 
 const AdminPortal: React.FC<AdminPortalProps> = ({ user, onLogout }) => {
-  const { t, language } = useLanguage();
   const { addNotification } = useNotifications();
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem('desklink_admin_activeTab') || 'Dashboard');
   const [isFirebaseAuthenticated, setIsFirebaseAuthenticated] = useState(!!auth.currentUser);

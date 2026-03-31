@@ -134,7 +134,6 @@ import ActivityFeed from './ActivityFeed';
 import QuotationPortal from './QuotationPortal';
 import SettingsView from './SettingsView';
 import { FileUpload } from './FileUpload';
-import { useLanguage } from '../context/LanguageContext';
 import { useNotifications } from '../context/NotificationContext';
 
 interface ClientPortalProps {
@@ -143,7 +142,6 @@ interface ClientPortalProps {
 }
 
 const ClientPortal: React.FC<ClientPortalProps> = ({ user, onLogout }) => {
-  const { t, language, setLanguage } = useLanguage();
   const { addNotification } = useNotifications();
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem('desklink_client_activeTab') || 'home');
   const [activeSubTab, setActiveSubTab] = useState<string | null>(null);

@@ -27,7 +27,6 @@ import {
   HiCodeBracket as Code,
   HiClock as Clock,
   HiCurrencyDollar as DollarSign,
-  HiLanguage as Languages,
   HiPhone as Phone,
   HiDocumentText as FileText,
   HiCamera as Camera,
@@ -61,15 +60,12 @@ import {
   SiSlack, 
   SiZoom 
 } from "react-icons/si";
-import { LanguageProvider, useLanguage } from "./context/LanguageContext";
 import { TypingAnimation } from "./components/TypingAnimation";
 import { PremiumButton } from "./components/PremiumButton";
 import { RollingText } from "./components/RollingText";
 import AILogo from "./components/AILogo";
 import GeminiAssistant from "./components/GeminiAssistant";
 import { NotificationProvider } from "./context/NotificationContext";
-import { Language } from "./translations";
-import React, { useState, useEffect, useMemo, useRef } from "react";
 import { trackPageView, trackEvent } from "./analytics";
 import Select from 'react-select';
 import { Country } from 'country-state-city';
@@ -438,8 +434,6 @@ const Navbar = ({
   currentPage: string,
   setCurrentPage: (page: string) => void
 }) => {
-  const { t, language, setLanguage } = useLanguage();
-  const [isLangModalOpen, setIsLangModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -449,17 +443,11 @@ const Navbar = ({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const languages: { code: Language; label: string; flag: string }[] = [
-    { code: 'en', label: 'English', flag: '🇺🇸' },
-    { code: 'ru', label: 'Russian', flag: '🇷🇺' },
-    { code: 'uz', label: 'Uzbek', flag: '🇺🇿' }
-  ];
-
   const navLinks = [
-    { id: 'home', label: t.nav.home, icon: Home },
-    { id: 'about', label: t.about.tag, icon: Info },
-    { id: 'why', label: t.why.tag, icon: Star },
-    { id: 'contact', label: t.nav.contact, icon: Phone }
+    { id: 'home', label: 'Home', icon: Home },
+    { id: 'about', label: 'About Us', icon: Info },
+    { id: 'why', label: 'Why Desknet', icon: Star },
+    { id: 'contact', label: 'Contact', icon: Phone }
   ];
 
   return (
@@ -528,52 +516,6 @@ const Navbar = ({
 
           {/* Right Actions */}
           <div className="flex items-center gap-2 sm:gap-4 lg:gap-8">
-            <div className="hidden md:block relative">
-              <button 
-                onClick={() => setIsLangModalOpen(!isLangModalOpen)}
-                className="flex items-center gap-2 text-[13px] font-semibold text-white/40 hover:text-white transition-all group"
-              >
-                <Languages className="w-4 h-4 text-white/30 group-hover:text-brand-teal transition-colors" />
-                <span>{languages.find(l => l.code === language)?.label}</span>
-                <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${isLangModalOpen ? 'rotate-180' : ''}`} />
-              </button>
-
-              {/* Language Dropdown */}
-              <AnimatePresence>
-                {isLangModalOpen && (
-                  <>
-                    <div 
-                      className="fixed inset-0 z-[90]" 
-                      onClick={() => setIsLangModalOpen(false)}
-                    />
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute top-full right-0 mt-4 w-56 bg-black/95 md:backdrop-blur-3xl backdrop-blur-none border border-white/20 rounded-2xl p-2 shadow-[0_20px_50px_rgba(0,0,0,0.5),0_0_20px_rgba(45,212,191,0.1)] z-[100] overflow-y-auto max-h-[70vh]"
-                    >
-                      {languages.map((lang) => (
-                        <button
-                          key={lang.code}
-                          onClick={() => {
-                            setLanguage(lang.code);
-                            setIsLangModalOpen(false);
-                          }}
-                          className={`w-full p-3 rounded-xl text-left flex items-center justify-between group transition-all ${language === lang.code ? 'bg-brand-teal text-brand-dark' : 'hover:bg-white/5 text-white/50 hover:text-white'}`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="text-xl">{lang.flag}</span>
-                            <span className="font-bold text-xs">{lang.label}</span>
-                          </div>
-                          {language === lang.code && <Check className="w-4 h-4" />}
-                        </button>
-                      ))}
-                    </motion.div>
-                  </>
-                )}
-              </AnimatePresence>
-            </div>
-            
             <PremiumButton 
               onClick={onLoginClick}
               variant="ghost"
@@ -3919,9 +3861,7 @@ const AppContent = () => {
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
+    <AppContent />
   );
 }
 

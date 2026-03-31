@@ -9,12 +9,12 @@ import {
   HiArrowRight as ArrowRight,
   HiCheckCircle as CheckCircle
 } from 'react-icons/hi2';
-import { useLanguage } from '../context/LanguageContext';
 import { TypingAnimation } from './TypingAnimation';
 import { PremiumButton } from './PremiumButton';
+import { englishStrings } from '../english-strings';
 
 const ContactPage = () => {
-  const { t } = useLanguage();
+  const t = englishStrings.contact;
   const [formState, setFormState] = useState({
     name: '',
     email: '',

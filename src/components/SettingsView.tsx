@@ -13,8 +13,8 @@ import {
   HiShieldCheck as Shield
 } from 'react-icons/hi2';
 import { PremiumButton } from './PremiumButton';
-import { useLanguage } from '../context/LanguageContext';
 import { updateDoc, doc, db, serverTimestamp } from '../firebase';
+import { englishStrings } from '../english-strings';
 
 interface SettingsViewProps {
   currentUser: any;
@@ -22,7 +22,7 @@ interface SettingsViewProps {
 }
 
 const SettingsView: React.FC<SettingsViewProps> = ({ currentUser, role }) => {
-  const { language, setLanguage, t } = useLanguage();
+  const t = englishStrings;
   const [activeSection, setActiveSection] = useState<'profile' | 'security' | 'notifications'>('profile');
   const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);

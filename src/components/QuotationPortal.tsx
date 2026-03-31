@@ -31,7 +31,6 @@ import {
   auth
 } from '../firebase';
 import { PremiumButton } from './PremiumButton';
-import { useLanguage } from '../context/LanguageContext';
 import { useNotifications } from '../context/NotificationContext';
 
 enum OperationType {
@@ -69,7 +68,6 @@ interface QuotationPortalProps {
 }
 
 const QuotationPortal: React.FC<QuotationPortalProps> = ({ role, userEmail, userName }) => {
-  const { t } = useLanguage();
   const { addNotification } = useNotifications();
   const [quotations, setQuotations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);

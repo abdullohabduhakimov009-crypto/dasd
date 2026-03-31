@@ -33,7 +33,6 @@ import ISO6391 from 'iso-639-1';
 import countriesLib from 'i18n-iso-countries';
 import enCountries from 'i18n-iso-countries/langs/en.json';
 import ruCountries from 'i18n-iso-countries/langs/ru.json';
-import { useLanguage } from '../context/LanguageContext';
 import { PremiumButton } from './PremiumButton';
 
 countriesLib.registerLocale(enCountries);
@@ -48,7 +47,6 @@ interface EngineerSignUpFlowProps {
 }
 
 const EngineerSignUpFlow: React.FC<EngineerSignUpFlowProps> = ({ isOpen, onClose, onComplete, initialData, initialStep = 1 }) => {
-  const { t, language, setLanguage } = useLanguage();
   const [step, setStep] = useState(initialStep);
   const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
