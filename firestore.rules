@@ -70,11 +70,15 @@ service cloud.firestore {
     }
 
     function isClient() {
-      return isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'client';
+      return isAuthenticated() && 
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'client');
     }
 
     function isEngineer() {
-      return isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'engineer';
+      return isAuthenticated() && 
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'engineer');
     }
 
     function hasRequiredFields(fields) {
@@ -102,24 +106,22 @@ service cloud.firestore {
       }
 
       allow read: if isAuthenticated();
-      allow create: if isOwner(userId) && isValidUser(request.resource.data) && 
-                      (request.resource.data.role != 'admin' || isAdmin());
-      allow update: if (isOwner(userId) || isAdmin()) && isValidUser(request.resource.data) &&
-                      (request.resource.data.role == resource.data.role || isAdmin());
+      allow create: if (isOwner(userId) || isAdmin()) && isValidUser(request.resource.data);
+      allow update: if (isOwner(userId) || isAdmin()) && isValidUser(request.resource.data);
       allow delete: if isAdmin();
     }
 
     match /tickets/{ticketId} {
       function isValidTicket(data) {
         return (data.title is string || data.subject is string) &&
-               data.status in ['Pending', 'Open', 'Assigned', 'In Progress', 'Completed', 'Cancelled', 'Rejected'] &&
-               (data.clientId is string || data.authorUid is string) &&
-               (data.clientEmail is string || data.contactEmail is string);
+               data.status in ['Pending', 'Open', 'Assigned', 'In Progress', 'Completed', 'Cancelled', 'Rejected', 'Approved', 'Waiting for client approval', 'Quote Accepted', 'Waiting for Confirmation', 'On Site'] &&
+               (data.clientId is string || data.authorUid is string || data.authorId is string) &&
+               (data.clientEmail is string || data.contactEmail is string || data.email is string);
       }
 
-      allow read: if isAuthenticated() && (isAdmin() || request.auth.uid == resource.data.clientId || request.auth.uid == resource.data.authorUid || request.auth.uid == resource.data.engineerId);
-      allow create: if isClient() && isValidTicket(request.resource.data) && (request.resource.data.clientId == request.auth.uid || request.resource.data.authorUid == request.auth.uid);
-      allow update: if isAuthenticated() && (isAdmin() || request.auth.uid == resource.data.clientId || request.auth.uid == resource.data.authorUid || request.auth.uid == resource.data.engineerId) && isValidTicket(request.resource.data);
+      allow read: if isAuthenticated() && (isAdmin() || request.auth.uid == resource.data.clientId || request.auth.uid == resource.data.authorUid || request.auth.uid == resource.data.authorId || request.auth.uid == resource.data.engineerId);
+      allow create: if isAuthenticated() && isValidTicket(request.resource.data);
+      allow update: if isAuthenticated() && (isAdmin() || request.auth.uid == resource.data.clientId || request.auth.uid == resource.data.authorUid || request.auth.uid == resource.data.authorId || request.auth.uid == resource.data.engineerId) && isValidTicket(request.resource.data);
       allow delete: if isAdmin();
     }
 

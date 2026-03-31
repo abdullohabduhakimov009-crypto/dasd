@@ -3210,6 +3210,7 @@ const LogTicket = () => {
       await addDoc(collection(db, "tickets"), {
         ...formData,
         status: 'Pending',
+        authorUid: auth.currentUser?.uid || 'guest',
         clientEmail: auth.currentUser?.email || 'guest@example.com',
         clientName: auth.currentUser?.displayName || 'Guest User',
         createdAt: serverTimestamp(),
@@ -3535,9 +3536,22 @@ const AppContent = () => {
           const userDoc = await getDoc(userRef);
           let userData = userDoc.exists() ? userDoc.data() : null;
           const adminEmail = import.meta.env.VITE_ADMIN_EMAIL || 'logistmate@gmail.com';
-          let role = userData?.role || (user.email === adminEmail ? 'admin' : 'client');
+          const masterAdminEmail = 'abdullohabduhakimov009@gmail.com';
+          let role = userData?.role || (user.email === adminEmail || user.email === masterAdminEmail ? 'admin' : 'client');
           
-          handleLoginSuccess(role, userData || { uid: user.uid, email: user.email, role: 'admin', name: 'Administrator' });
+          if (!userDoc.exists()) {
+            const newUserData = {
+              uid: user.uid,
+              email: user.email,
+              role: role,
+              name: user.displayName || 'User',
+              createdAt: serverTimestamp()
+            };
+            await setDoc(userRef, newUserData);
+            userData = newUserData;
+          }
+          
+          handleLoginSuccess(role, userData || { uid: user.uid, email: user.email, role: role, name: user.displayName || 'User' });
         } catch (error) {
           console.error("Error fetching initial user data:", error);
         }

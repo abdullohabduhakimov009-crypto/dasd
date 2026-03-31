@@ -353,8 +353,13 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ user, onLogout }) => {
     if (!isFirebaseAuthenticated) return;
 
     const unsubTickets = onSnapshot(query(collection(db, "tickets"), orderBy("createdAt", "desc")), (snapshot) => {
-      setTickets(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    }, (error) => handleFirestoreError(error, OperationType.LIST, "tickets"));
+      const ticketList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      console.log("[AdminPortal] Fetched tickets:", ticketList.length, ticketList);
+      setTickets(ticketList);
+    }, (error) => {
+      console.error("[AdminPortal] Error fetching tickets:", error);
+      handleFirestoreError(error, OperationType.LIST, "tickets");
+    });
 
     const unsubUsers = onSnapshot(collection(db, "users"), (snapshot) => {
       setUsers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
@@ -1511,7 +1516,7 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ user, onLogout }) => {
                           {ticket.priority.charAt(0)}
                         </div>
                         <div className="min-w-0">
-                          <p className="font-bold text-slate-900 group-hover:text-brand-teal transition-colors truncate">{ticket.subject}</p>
+                          <p className="font-bold text-slate-900 group-hover:text-brand-teal transition-colors truncate">{ticket.subject || ticket.title}</p>
                           <div className="flex items-center gap-2 mt-0.5">
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">#{ticket.id.slice(0, 6).toUpperCase()}</span>
                             <span className="w-1 h-1 bg-slate-300 rounded-full" />
@@ -2027,6 +2032,7 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ user, onLogout }) => {
 
         const filteredTickets = tickets.filter(ticket => {
           const matchesSearch = (ticket.subject?.toLowerCase() || '').includes(ticketSearch.toLowerCase()) ||
+                               (ticket.title?.toLowerCase() || '').includes(ticketSearch.toLowerCase()) ||
                                (ticket.clientName?.toLowerCase() || '').includes(ticketSearch.toLowerCase()) ||
                                (ticket.clientEmail?.toLowerCase() || '').includes(ticketSearch.toLowerCase());
           
@@ -2200,7 +2206,7 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ user, onLogout }) => {
                         </div>
                       </td>
                       <td className={`px-6 py-4 text-sm transition-all duration-500 max-w-[200px] ${ticket.status === 'Completed' ? 'text-slate-400 line-through' : 'text-slate-600'}`}>
-                        <p className="truncate">{ticket.subject}</p>
+                        <p className="truncate">{ticket.subject || ticket.title}</p>
                       </td>
                       <td className="px-6 py-4">
                         <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase ${

@@ -1415,7 +1415,7 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ user, onLogout }) => {
                             {ticket.priority.charAt(0)}
                           </div>
                           <div className="min-w-0">
-                            <p className="font-bold text-slate-900 group-hover:text-brand-teal transition-colors truncate" title={ticket.subject}>{ticket.subject}</p>
+                            <p className="font-bold text-slate-900 group-hover:text-brand-teal transition-colors truncate" title={ticket.subject || ticket.title}>{ticket.subject || ticket.title}</p>
                             <p className="text-xs text-slate-500 truncate">#{ticket.id.slice(0, 6).toUpperCase()} • {ticket.status}</p>
                           </div>
                         </div>
@@ -2060,8 +2060,8 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ user, onLogout }) => {
                       >
                         <td className="p-4 font-bold text-slate-700 text-sm">#{ticket.id.slice(0, 5).toUpperCase()}</td>
                         <td className="p-4">
-                          <div className={`font-semibold transition-all duration-500 truncate max-w-[250px] ${ticket.status === 'Completed' ? 'text-slate-400 line-through' : 'text-slate-900'}`} title={ticket.subject}>
-                            {ticket.subject}
+                          <div className={`font-semibold transition-all duration-500 truncate max-w-[250px] ${ticket.status === 'Completed' ? 'text-slate-400 line-through' : 'text-slate-900'}`} title={ticket.subject || ticket.title}>
+                            {ticket.subject || ticket.title}
                           </div>
                           <div className="text-xs text-slate-400 truncate max-w-[250px]" title={ticket.description}>{ticket.description}</div>
                         </td>
