@@ -1136,20 +1136,20 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ user, onLogout }) => {
                       (u.email?.toLowerCase() || '').includes(userSearch.toLowerCase())
                     )
                     .map(u => (
-                    <div key={u.email} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-slate-400 shadow-sm">
+                    <div key={u.email} className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-slate-400 shadow-sm shrink-0">
                           <User className="w-5 h-5" />
                         </div>
-                        <div>
-                          <h5 className="font-bold text-slate-900 text-sm">{u.displayName}</h5>
-                          <p className="text-[10px] text-slate-400">{u.email}</p>
+                        <div className="min-w-0">
+                          <h5 className="font-bold text-slate-900 text-sm truncate" title={u.displayName}>{u.displayName}</h5>
+                          <p className="text-[10px] text-slate-400 truncate" title={u.email}>{u.email}</p>
                         </div>
                       </div>
                       <PremiumButton 
                         variant="ghost"
                         size="sm"
-                        className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-all min-w-0"
+                        className="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-all min-w-0 shrink-0"
                       >
                         <X className="w-4 h-4" />
                       </PremiumButton>
@@ -1406,20 +1406,20 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ user, onLogout }) => {
                   </div>
                   <div className="divide-y divide-slate-100">
                     {tickets.slice(0, 5).map((ticket, i) => (
-                      <div key={ticket.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors group cursor-pointer" onClick={() => { setSelectedTicket(ticket); setActiveTab('my-tickets'); }}>
-                        <div className="flex items-center gap-4">
-                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xs ${
+                      <div key={ticket.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors group cursor-pointer gap-4" onClick={() => { setSelectedTicket(ticket); setActiveTab('my-tickets'); }}>
+                        <div className="flex items-center gap-4 min-w-0">
+                          <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-bold text-xs shrink-0 ${
                             ticket.priority === 'High' ? 'bg-rose-50 text-rose-500' : 
                             ticket.priority === 'Medium' ? 'bg-orange-50 text-orange-500' : 'bg-blue-50 text-blue-500'
                           }`}>
                             {ticket.priority.charAt(0)}
                           </div>
-                          <div>
-                            <p className="font-bold text-slate-900 group-hover:text-brand-teal transition-colors">{ticket.subject}</p>
-                            <p className="text-xs text-slate-500">#{ticket.id.slice(0, 6).toUpperCase()} • {ticket.status}</p>
+                          <div className="min-w-0">
+                            <p className="font-bold text-slate-900 group-hover:text-brand-teal transition-colors truncate" title={ticket.subject}>{ticket.subject}</p>
+                            <p className="text-xs text-slate-500 truncate">#{ticket.id.slice(0, 6).toUpperCase()} • {ticket.status}</p>
                           </div>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 transition-all" />
+                        <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-900 transition-all shrink-0" />
                       </div>
                     ))}
                     {tickets.length === 0 && <p className="text-center text-slate-400 py-12">No tickets found</p>}
@@ -2060,10 +2060,10 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ user, onLogout }) => {
                       >
                         <td className="p-4 font-bold text-slate-700 text-sm">#{ticket.id.slice(0, 5).toUpperCase()}</td>
                         <td className="p-4">
-                          <div className={`font-semibold transition-all duration-500 ${ticket.status === 'Completed' ? 'text-slate-400 line-through' : 'text-slate-900'}`}>
+                          <div className={`font-semibold transition-all duration-500 truncate max-w-[250px] ${ticket.status === 'Completed' ? 'text-slate-400 line-through' : 'text-slate-900'}`} title={ticket.subject}>
                             {ticket.subject}
                           </div>
-                          <div className="text-xs text-slate-400 truncate max-w-[200px]">{ticket.description}</div>
+                          <div className="text-xs text-slate-400 truncate max-w-[250px]" title={ticket.description}>{ticket.description}</div>
                         </td>
                         <td className="p-4 text-xs font-medium text-slate-600">{ticket.serviceType || 'N/A'}</td>
                         <td className="p-4">
@@ -2099,11 +2099,11 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ user, onLogout }) => {
                           </span>
                         </td>
                         <td className="p-4 text-slate-600 text-sm">
-                          <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center text-[10px] font-bold text-slate-400">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center text-[10px] font-bold text-slate-400 shrink-0">
                               {ticket.engineerName?.charAt(0) || 'U'}
                             </div>
-                            <span>{ticket.engineerName || 'Unassigned'}</span>
+                            <span className="truncate max-w-[120px]" title={ticket.engineerName || 'Unassigned'}>{ticket.engineerName || 'Unassigned'}</span>
                           </div>
                         </td>
                         <td className="p-4 text-slate-500 text-sm">
@@ -2216,13 +2216,13 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ user, onLogout }) => {
                           }}
                           className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between hover:border-[#009688]/30 transition-all cursor-pointer"
                         >
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-[#009688] shadow-sm">
+                          <div className="flex items-center gap-4 min-w-0">
+                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-[#009688] shadow-sm shrink-0">
                               <Briefcase className="w-5 h-5" />
                             </div>
-                            <div>
-                              <h5 className="font-bold text-slate-900">{opp.title}</h5>
-                              <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
+                            <div className="min-w-0">
+                              <h5 className="font-bold text-slate-900 truncate" title={opp.title}>{opp.title}</h5>
+                              <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider truncate">
                                 {opp.type} • {opp.location || 'Remote'} • {opp.createdAt?.toDate ? opp.createdAt.toDate().toLocaleDateString() : 'Just now'}
                               </p>
                             </div>
@@ -2466,15 +2466,15 @@ const ClientPortal: React.FC<ClientPortalProps> = ({ user, onLogout }) => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {subUsers.map((u) => (
-                <div key={u.email} className="bg-white p-6 rounded-2xl border border-slate-200 flex items-center gap-4">
-                  <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-400">
+                <div key={u.email} className="bg-white p-6 rounded-2xl border border-slate-200 flex items-center gap-4 min-w-0">
+                  <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 shrink-0">
                     <User className="w-6 h-6" />
                   </div>
-                  <div className="flex-1">
-                    <h4 className="font-bold text-slate-900">{u.displayName}</h4>
-                    <p className="text-xs text-slate-400">{u.email}</p>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-bold text-slate-900 truncate" title={u.displayName}>{u.displayName}</h4>
+                    <p className="text-xs text-slate-400 truncate" title={u.email}>{u.email}</p>
                   </div>
-                  <div className="text-right flex items-center gap-3">
+                  <div className="text-right flex items-center gap-3 shrink-0">
                     <div>
                       <span className="block text-xs font-bold text-slate-500 mb-1">{u.role}</span>
                       <span className={`text-[10px] font-bold uppercase ${u.status === 'Active' ? 'text-emerald-500' : 'text-slate-400'}`}>

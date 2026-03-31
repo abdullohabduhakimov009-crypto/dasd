@@ -1043,18 +1043,18 @@ const EngineerPortal: React.FC<EngineerPortalProps> = ({ user, onLogout }) => {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 text-slate-500 text-sm mb-8">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-slate-500 text-sm mb-8">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 shrink-0">
                             <Mail className="w-4 h-4" />
                           </div>
-                          <span className="font-medium">{user?.email || 'Not provided'}</span>
+                          <span className="font-medium truncate" title={user?.email || 'Not provided'}>{user?.email || 'Not provided'}</span>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 shrink-0">
                             <Briefcase className="w-4 h-4" />
                           </div>
-                          <div className="font-medium">
+                          <div className="font-medium truncate">
                             {isEditing ? (
                               <Select 
                                 isMulti
@@ -1066,7 +1066,9 @@ const EngineerPortal: React.FC<EngineerPortalProps> = ({ user, onLogout }) => {
                                 placeholder="Specializations"
                               />
                             ) : (
-                              <span className="text-slate-900 font-bold">
+                              <span className="text-slate-900 font-bold truncate" title={Array.isArray(user?.specializations) 
+                                ? user.specializations.map((s: any) => s.label || s).join(', ')
+                                : (user?.specialization?.label ?? (typeof user?.specialization === 'string' ? user.specialization : 'Not provided'))}>
                                 {Array.isArray(user?.specializations) 
                                   ? user.specializations.map((s: any) => s.label || s).join(', ')
                                   : (user?.specialization?.label ?? (typeof user?.specialization === 'string' ? user.specialization : 'Not provided'))}
@@ -1074,11 +1076,11 @@ const EngineerPortal: React.FC<EngineerPortalProps> = ({ user, onLogout }) => {
                             )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 shrink-0">
                             <ShieldCheck className="w-4 h-4" />
                           </div>
-                          <div className="font-medium">
+                          <div className="font-medium truncate">
                             {isEditing ? (
                               <CustomDropdown 
                                 value={editedUser.engineerLevel || 'L1'}
@@ -1092,21 +1094,21 @@ const EngineerPortal: React.FC<EngineerPortalProps> = ({ user, onLogout }) => {
                                 className="w-full"
                               />
                             ) : (
-                              <span className="text-slate-900 font-bold">Engineer Level: {user?.engineerLevel || 'L1'}</span>
+                              <span className="text-slate-900 font-bold truncate">Engineer Level: {user?.engineerLevel || 'L1'}</span>
                             )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 shrink-0">
                             <Phone className="w-4 h-4" />
                           </div>
-                          <span className="font-medium">{user?.phoneNumber || user?.phone || 'Not provided'}</span>
+                          <span className="font-medium truncate" title={user?.phoneNumber || user?.phone || 'Not provided'}>{user?.phoneNumber || user?.phone || 'Not provided'}</span>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 shrink-0">
                             <FaLinkedin className="w-4 h-4" />
                           </div>
-                          <div className="font-medium">
+                          <div className="font-medium truncate">
                             {isEditing ? (
                               <input 
                                 type="text" 
@@ -1117,15 +1119,15 @@ const EngineerPortal: React.FC<EngineerPortalProps> = ({ user, onLogout }) => {
                                 placeholder={t.signup.fields.linkedin}
                               />
                             ) : (
-                              <span className="text-slate-900 font-bold">{user?.linkedin || 'Not provided'}</span>
+                              <span className="text-slate-900 font-bold truncate" title={user?.linkedin || 'Not provided'}>{user?.linkedin || 'Not provided'}</span>
                             )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 shrink-0">
                             <FaFacebook className="w-4 h-4" />
                           </div>
-                          <div className="font-medium">
+                          <div className="font-medium truncate">
                             {isEditing ? (
                               <input 
                                 type="text" 
@@ -1136,15 +1138,15 @@ const EngineerPortal: React.FC<EngineerPortalProps> = ({ user, onLogout }) => {
                                 placeholder={t.signup.fields.facebook}
                               />
                             ) : (
-                              <span className="text-slate-900 font-bold">{user?.facebook || 'Not provided'}</span>
+                              <span className="text-slate-900 font-bold truncate" title={user?.facebook || 'Not provided'}>{user?.facebook || 'Not provided'}</span>
                             )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-8 h-8 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 shrink-0">
                             <MapPin className="w-4 h-4" />
                           </div>
-                          <div className="font-medium">
+                          <div className="font-medium truncate">
                             {isEditing ? (
                               <div className="flex flex-col gap-2">
                                 <div className="flex gap-2">
@@ -1176,7 +1178,7 @@ const EngineerPortal: React.FC<EngineerPortalProps> = ({ user, onLogout }) => {
                                 />
                               </div>
                             ) : (
-                              <span className="text-slate-900 font-bold">
+                              <span className="text-slate-900 font-bold truncate" title={`${user?.city?.label ?? (typeof user?.city === 'string' ? user.city : 'Not provided')}, ${user?.country?.label ?? (typeof user?.country === 'string' ? user.country : 'Not provided')}${user?.zipCode ? ` (${user.zipCode})` : ''}`}>
                                 {user?.city?.label ?? (typeof user?.city === 'string' ? user.city : 'Not provided')}, {user?.country?.label ?? (typeof user?.country === 'string' ? user.country : 'Not provided')}
                                 {user?.zipCode && <span className="text-slate-400 font-medium ml-2">({user.zipCode})</span>}
                               </span>

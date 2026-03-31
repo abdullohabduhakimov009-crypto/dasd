@@ -1704,7 +1704,7 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ user, onLogout }) => {
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-sm text-slate-500">{client.email}</td>
+                        <td className="px-6 py-4 text-sm text-slate-500 truncate max-w-[200px]" title={client.email}>{client.email}</td>
                         <td className="px-6 py-4">
                           <div className="flex flex-col">
                             <span className="text-sm text-slate-600 font-medium">{client.country?.label ?? (typeof client.country === 'string' ? client.country : (client.location || 'N/A'))}</span>
@@ -1892,8 +1892,10 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ user, onLogout }) => {
                         </span>
                       </div>
                     </div>
-                    <h4 className="text-lg font-bold text-slate-900 mb-1 group-hover:text-brand-teal transition-colors">{eng.displayName || eng.fullName || 'Unnamed Engineer'}</h4>
-                    <p className="text-sm text-slate-500 mb-4">
+                    <h4 className="text-lg font-bold text-slate-900 mb-1 group-hover:text-brand-teal transition-colors truncate" title={eng.displayName || eng.fullName || 'Unnamed Engineer'}>
+                      {eng.displayName || eng.fullName || 'Unnamed Engineer'}
+                    </h4>
+                    <p className="text-sm text-slate-500 mb-4 truncate" title={`${eng.specialization?.label ?? (typeof eng.specialization === 'string' ? eng.specialization : 'General Engineer')} • ${eng.engineerLevel?.label ?? (typeof eng.engineerLevel === 'string' ? eng.engineerLevel : 'L1')} • ${eng.location || (eng.city?.label ? `${eng.city.label}, ${eng.country?.label}` : (typeof eng.city === 'string' ? `${eng.city}, ${eng.country}` : 'N/A'))}`}>
                       {eng.specialization?.label ?? (typeof eng.specialization === 'string' ? eng.specialization : 'General Engineer')} • {eng.engineerLevel?.label ?? (typeof eng.engineerLevel === 'string' ? eng.engineerLevel : 'L1')} • {eng.location || (eng.city?.label ? `${eng.city.label}, ${eng.country?.label}` : (typeof eng.city === 'string' ? `${eng.city}, ${eng.country}` : 'N/A'))}
                     </p>
                     
@@ -3569,26 +3571,34 @@ const AdminPortal: React.FC<AdminPortalProps> = ({ user, onLogout }) => {
                       <User className="w-12 h-12 text-slate-200" />
                     )}
                   </div>
-                  <div className="flex-1 text-center md:text-left">
-                    <h2 className="text-2xl font-bold text-slate-900 mb-2">{selectedEngineer.displayName || selectedEngineer.fullName}</h2>
-                    <p className="text-brand-teal font-bold mb-4">{selectedEngineer.specialization?.label ?? (typeof selectedEngineer.specialization === 'string' ? selectedEngineer.specialization : 'IT Professional')}</p>
+                  <div className="flex-1 text-center md:text-left min-w-0">
+                    <h2 className="text-2xl font-bold text-slate-900 mb-2 truncate" title={selectedEngineer.displayName || selectedEngineer.fullName}>{selectedEngineer.displayName || selectedEngineer.fullName}</h2>
+                    <p className="text-brand-teal font-bold mb-4 truncate" title={selectedEngineer.specialization?.label ?? (typeof selectedEngineer.specialization === 'string' ? selectedEngineer.specialization : 'IT Professional')}>
+                      {selectedEngineer.specialization?.label ?? (typeof selectedEngineer.specialization === 'string' ? selectedEngineer.specialization : 'IT Professional')}
+                    </p>
                     <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-slate-500">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="w-4 h-4" />
-                        <span>{selectedEngineer.city?.label ?? (typeof selectedEngineer.city === 'string' ? selectedEngineer.city : '')}, {selectedEngineer.country?.label ?? (typeof selectedEngineer.country === 'string' ? selectedEngineer.country : '')}</span>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <MapPin className="w-4 h-4 shrink-0" />
+                        <span className="truncate" title={`${selectedEngineer.city?.label ?? (typeof selectedEngineer.city === 'string' ? selectedEngineer.city : '')}, ${selectedEngineer.country?.label ?? (typeof selectedEngineer.country === 'string' ? selectedEngineer.country : '')}`}>
+                          {selectedEngineer.city?.label ?? (typeof selectedEngineer.city === 'string' ? selectedEngineer.city : '')}, {selectedEngineer.country?.label ?? (typeof selectedEngineer.country === 'string' ? selectedEngineer.country : '')}
+                        </span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Mail className="w-4 h-4" />
-                        <span>{selectedEngineer.email}</span>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Mail className="w-4 h-4 shrink-0" />
+                        <span className="truncate" title={selectedEngineer.email}>{selectedEngineer.email}</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4" />
-                        <span>{selectedEngineer.phoneCountryCode?.value ?? (typeof selectedEngineer.phoneCountryCode === 'string' ? selectedEngineer.phoneCountryCode : '')} {selectedEngineer.phoneNumber}</span>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Phone className="w-4 h-4 shrink-0" />
+                        <span className="truncate" title={`${selectedEngineer.phoneCountryCode?.value ?? (typeof selectedEngineer.phoneCountryCode === 'string' ? selectedEngineer.phoneCountryCode : '')} ${selectedEngineer.phoneNumber}`}>
+                          {selectedEngineer.phoneCountryCode?.value ?? (typeof selectedEngineer.phoneCountryCode === 'string' ? selectedEngineer.phoneCountryCode : '')} {selectedEngineer.phoneNumber}
+                        </span>
                       </div>
                       {selectedEngineer.whatsappNumber && (
-                        <div className="flex items-center gap-2">
-                          <MessageCircle className="w-4 h-4 text-emerald-500" />
-                          <span>{selectedEngineer.whatsappCountryCode?.value ?? (typeof selectedEngineer.whatsappCountryCode === 'string' ? selectedEngineer.whatsappCountryCode : '')} {selectedEngineer.whatsappNumber} (WhatsApp)</span>
+                        <div className="flex items-center gap-2 min-w-0">
+                          <MessageCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+                          <span className="truncate" title={`${selectedEngineer.whatsappCountryCode?.value ?? (typeof selectedEngineer.whatsappCountryCode === 'string' ? selectedEngineer.whatsappCountryCode : '')} ${selectedEngineer.whatsappNumber} (WhatsApp)`}>
+                            {selectedEngineer.whatsappCountryCode?.value ?? (typeof selectedEngineer.whatsappCountryCode === 'string' ? selectedEngineer.whatsappCountryCode : '')} {selectedEngineer.whatsappNumber} (WhatsApp)
+                          </span>
                         </div>
                       )}
                     </div>

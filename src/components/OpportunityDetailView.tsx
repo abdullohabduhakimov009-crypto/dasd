@@ -66,14 +66,14 @@ const OpportunityDetailView: React.FC<OpportunityDetailViewProps> = ({ opportuni
           <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400">
             <Briefcase className="w-6 h-6" />
           </div>
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <h3 className="text-lg font-bold text-slate-900">{opportunity.title}</h3>
-              <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase border ${getStatusColor(opportunity.status)}`}>
+              <h3 className="text-lg font-bold text-slate-900 truncate" title={opportunity.title}>{opportunity.title}</h3>
+              <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold uppercase border shrink-0 ${getStatusColor(opportunity.status)}`}>
                 {opportunity.status}
               </span>
             </div>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-500 truncate">
               {opportunity.type} • Created on {formatDateTime(opportunity.createdAt)}
             </p>
           </div>
@@ -168,9 +168,9 @@ const OpportunityDetailView: React.FC<OpportunityDetailViewProps> = ({ opportuni
                   <div className="w-12 h-12 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 font-bold">
                     {opportunity.clientName?.charAt(0) || 'C'}
                   </div>
-                  <div>
-                    <p className="font-bold text-slate-900">{opportunity.clientName || 'Unknown Client'}</p>
-                    <p className="text-xs text-slate-500">{opportunity.clientEmail}</p>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-slate-900 truncate" title={opportunity.clientName || 'Unknown Client'}>{opportunity.clientName || 'Unknown Client'}</p>
+                    <p className="text-xs text-slate-500 truncate" title={opportunity.clientEmail}>{opportunity.clientEmail}</p>
                   </div>
                 </div>
               </div>

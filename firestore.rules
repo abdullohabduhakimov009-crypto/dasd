@@ -6,25 +6,46 @@ service cloud.firestore {
     // ===============================================================
     //
     // Collection: users
-    // Document ID: {userId} (matches Firebase Auth UID)
+    // Document ID: userId (UID from Firebase Auth)
     // Fields:
-    //   - uid: string (required)
+    //   - fullName: string (optional)
     //   - email: string (required, email format)
-    //   - role: string (required, one of: 'admin', 'client', 'engineer')
-    //   - displayName: string (optional)
-    //   - name: string (optional)
-    //   - createdAt: timestamp (optional)
-    //   - paymentDetails: map (optional)
+    //   - role: string (required, ['engineer', 'client', 'admin'])
+    //   - photoURL: string (optional, uri)
+    //   - createdAt: timestamp (required)
     //
     // Collection: tickets
-    // Document ID: {ticketId}
+    // Document ID: ticketId (Auto-generated)
     // Fields:
-    //   - clientUid: string (required)
-    //   - subject: string (required)
-    //   - description: string (required)
-    //   - status: string (required, enum)
-    //   - priority: string (required, enum)
+    //   - title: string (required)
+    //   - description: string (optional)
+    //   - status: string (required, ['Open', 'Assigned', 'In Progress', 'Completed', 'Cancelled'])
+    //   - clientId: string (required, UID)
+    //   - engineerId: string (optional, UID)
     //   - createdAt: timestamp (required)
+    //
+    // Collection: jobs
+    // Document ID: jobId (Auto-generated)
+    // Fields:
+    //   - title: string (required)
+    //   - status: string (required, ['Active', 'Closed', 'Draft'])
+    //   - createdAt: timestamp (required)
+    //
+    // Collection: applications
+    // Document ID: applicationId (Auto-generated)
+    // Fields:
+    //   - jobId: string (required)
+    //   - engineerId: string (required, UID)
+    //   - status: string (required, ['Pending', 'Accepted', 'Rejected'])
+    //   - appliedAt: timestamp (required)
+    //
+    // Collection: messages
+    // Document ID: messageId (Auto-generated)
+    // Fields:
+    //   - senderId: string (required, UID)
+    //   - receiverId: string (required, UID)
+    //   - text: string (required)
+    //   - timestamp: timestamp (required)
     //
     // ===============================================================
 
@@ -46,69 +67,98 @@ service cloud.firestore {
           (request.auth.token.email == "abdullohabduhakimov009@gmail.com" && request.auth.token.email_verified == true));
     }
 
-    function isDocOwner() {
-      return isAuthenticated() && request.auth.uid == resource.data.uid;
+    function isClient() {
+      return isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'client';
+    }
+
+    function isEngineer() {
+      return isAuthenticated() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'engineer';
     }
 
     function hasRequiredFields(fields) {
       return request.resource.data.keys().hasAll(fields);
     }
 
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
     function isValidEmail(email) {
-      return email is string &&
-        email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
     }
 
     // ===============================================================
-    // Rules
+    // Collection Rules
     // ===============================================================
 
     match /users/{userId} {
       function isValidUser(data) {
-        return data.keys().hasAll(['uid', 'email', 'role']) &&
-               data.uid is string &&
-               data.email is string && isValidEmail(data.email) &&
-               data.role in ['admin', 'client', 'engineer'];
+        return data.email is string && isValidEmail(data.email) &&
+               data.role in ['engineer', 'client', 'admin'] &&
+               (data.fullName == null || (data.fullName is string && data.fullName.size() < 100)) &&
+               (data.photoURL == null || (data.photoURL is string && data.photoURL.size() < 1000));
       }
 
-      allow read: if isOwner(userId) || isAdmin();
-      
-      allow create: if isAuthenticated() && 
-                      isValidUser(request.resource.data) && 
-                      (isOwner(userId) && request.resource.data.role != 'admin' || isAdmin());
-      
-      allow update: if isAuthenticated() && 
-                      isValidUser(request.resource.data) && 
-                      (isOwner(userId) && request.resource.data.role == resource.data.role || isAdmin());
-      
+      allow read: if isAuthenticated();
+      allow create: if isOwner(userId) && isValidUser(request.resource.data) && 
+                      (request.resource.data.role != 'admin' || isAdmin());
+      allow update: if (isOwner(userId) || isAdmin()) && isValidUser(request.resource.data) &&
+                      (request.resource.data.role == resource.data.role || isAdmin());
       allow delete: if isAdmin();
     }
 
     match /tickets/{ticketId} {
       function isValidTicket(data) {
-        return data.keys().hasAll(['clientUid', 'subject', 'description', 'status', 'priority']) &&
-               data.clientUid is string &&
-               data.subject is string && data.subject.size() > 0 && data.subject.size() < 200 &&
-               data.description is string && data.description.size() > 0 && data.description.size() < 5000 &&
-               data.status in ['open', 'in-progress', 'completed', 'cancelled'] &&
-               data.priority in ['low', 'medium', 'high', 'critical'];
+        return data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+               data.status in ['Open', 'Assigned', 'In Progress', 'Completed', 'Cancelled'] &&
+               data.clientId is string &&
+               (data.engineerId == null || data.engineerId is string);
       }
 
-      allow read: if isAuthenticated() && (request.auth.uid == resource.data.clientUid || isAdmin());
-      
-      allow create: if isAuthenticated() && 
-                      isValidTicket(request.resource.data) && 
-                      (request.auth.uid == request.resource.data.clientUid || isAdmin());
-      
-      allow update: if isAuthenticated() && 
-                      isValidTicket(request.resource.data) && 
-                      (request.auth.uid == resource.data.clientUid || isAdmin());
-      
+      allow read: if isAuthenticated() && (isAdmin() || request.auth.uid == resource.data.clientId || request.auth.uid == resource.data.engineerId);
+      allow create: if isClient() && isValidTicket(request.resource.data) && request.resource.data.clientId == request.auth.uid;
+      allow update: if isAuthenticated() && (isAdmin() || request.auth.uid == resource.data.clientId || request.auth.uid == resource.data.engineerId) && isValidTicket(request.resource.data);
       allow delete: if isAdmin();
     }
 
-    match /{path=**} {
-      allow read, write: if isAdmin();
+    match /jobs/{jobId} {
+      function isValidJob(data) {
+        return data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+               data.status in ['Active', 'Closed', 'Draft'];
+      }
+
+      allow read: if isAuthenticated();
+      allow write: if isAdmin() && isValidJob(request.resource.data);
+    }
+
+    match /applications/{applicationId} {
+      function isValidApplication(data) {
+        return data.jobId is string && data.engineerId is string &&
+               data.status in ['Pending', 'Accepted', 'Rejected'];
+      }
+
+      allow read: if isAuthenticated() && (isAdmin() || request.auth.uid == resource.data.engineerId);
+      allow create: if isEngineer() && isValidApplication(request.resource.data) && request.resource.data.engineerId == request.auth.uid;
+      allow update: if isAdmin() && isValidApplication(request.resource.data);
+      allow delete: if isAdmin() || (isEngineer() && request.auth.uid == resource.data.engineerId && resource.data.status == 'Pending');
+    }
+
+    match /messages/{messageId} {
+      function isValidMessage(data) {
+        return data.senderId is string && data.receiverId is string &&
+               data.text is string && data.text.size() > 0 && data.text.size() < 5000;
+      }
+
+      allow read: if isAuthenticated() && (request.auth.uid == resource.data.senderId || request.auth.uid == resource.data.receiverId || isAdmin());
+      allow create: if isAuthenticated() && isValidMessage(request.resource.data) && request.resource.data.senderId == request.auth.uid;
+      allow update: if isAuthenticated() && (request.auth.uid == resource.data.senderId || request.auth.uid == resource.data.receiverId) && 
+                      hasOnlyAllowedFields(resource.data.keys().concat(['read'])) &&
+                      request.resource.data.read is bool;
+      allow delete: if isAdmin();
+    }
+
+    match /test/connection {
+      allow read: if true;
     }
   }
 }

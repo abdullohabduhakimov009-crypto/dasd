@@ -2,72 +2,105 @@
   "entities": {
     "User": {
       "title": "User",
-      "description": "Represents a user in the system (admin, client, or engineer).",
+      "description": "A user of the system (Engineer, Client, or Admin)",
       "type": "object",
       "properties": {
-        "uid": { "type": "string" },
-        "email": { "type": "string", "format": "email" },
-        "displayName": { "type": "string" },
-        "name": { "type": "string" },
-        "role": { "type": "string", "enum": ["admin", "client", "engineer"] },
-        "createdAt": { "type": "string", "format": "date-time" },
-        "paymentDetails": { "$ref": "PaymentDetails" }
+        "fullName": { "type": "string", "description": "Full name of the user" },
+        "email": { "type": "string", "format": "email", "description": "Email address" },
+        "role": { "type": "string", "enum": ["engineer", "client", "admin"], "description": "User role" },
+        "photoURL": { "type": "string", "format": "uri", "description": "Profile picture URL" },
+        "country": { "type": "object", "description": "Country information" },
+        "city": { "type": "object", "description": "City information" },
+        "specializations": { "type": "array", "items": { "type": "string" }, "description": "Engineer specializations" },
+        "skills": { "type": "array", "items": { "type": "string" }, "description": "Engineer skills" },
+        "experience": { "type": "string", "description": "Years of experience" },
+        "hourlyRate": { "type": "string", "description": "Hourly rate" },
+        "halfDayRate": { "type": "string", "description": "Half day rate" },
+        "fullDayRate": { "type": "string", "description": "Full day rate" },
+        "currency": { "type": "string", "description": "Currency code" },
+        "bio": { "type": "string", "description": "User biography" },
+        "phoneNumber": { "type": "string", "description": "Phone number" },
+        "whatsappNumber": { "type": "string", "description": "WhatsApp number" },
+        "linkedin": { "type": "string", "description": "LinkedIn profile" },
+        "facebook": { "type": "string", "description": "Facebook profile" },
+        "cvFile": { "type": "string", "description": "URL to CV file" },
+        "idFile": { "type": "string", "description": "URL to ID file" },
+        "paymentDetails": { "type": "object", "description": "Bank account details" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account creation time" }
       },
-      "required": ["uid", "email", "role"]
-    },
-    "PaymentDetails": {
-      "title": "PaymentDetails",
-      "description": "Bank account details for an engineer.",
-      "type": "object",
-      "properties": {
-        "method": { "type": "string" },
-        "bankName": { "type": "string" },
-        "accountHolder": { "type": "string" },
-        "accountNumber": { "type": "string" },
-        "swiftCode": { "type": "string" },
-        "routingNumber": { "type": "string" },
-        "bankAddress": { "type": "string" }
-      }
+      "required": ["email", "role"]
     },
     "Ticket": {
       "title": "Ticket",
-      "description": "A service ticket logged by a client.",
+      "description": "A service ticket logged by a client",
       "type": "object",
       "properties": {
-        "id": { "type": "string" },
-        "clientUid": { "type": "string" },
-        "subject": { "type": "string" },
-        "description": { "type": "string" },
-        "status": { "type": "string", "enum": ["open", "in-progress", "completed", "cancelled"] },
-        "priority": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
-        "createdAt": { "type": "string", "format": "date-time" }
-      }
+        "title": { "type": "string", "description": "Ticket title" },
+        "description": { "type": "string", "description": "Detailed description" },
+        "status": { "type": "string", "enum": ["Open", "Assigned", "In Progress", "Completed", "Cancelled"], "description": "Ticket status" },
+        "priority": { "type": "string", "enum": ["Low", "Medium", "High", "Critical"], "description": "Ticket priority" },
+        "clientId": { "type": "string", "description": "UID of the client who created the ticket" },
+        "engineerId": { "type": "string", "description": "UID of the engineer assigned to the ticket" },
+        "serviceType": { "type": "string", "description": "Type of service requested" },
+        "country": { "type": "string", "description": "Country of service" },
+        "city": { "type": "string", "description": "City of service" },
+        "location": { "type": "string", "description": "Full location address" },
+        "contactEmail": { "type": "string", "format": "email", "description": "Contact email for the ticket" },
+        "contactPhone": { "type": "string", "description": "Contact phone for the ticket" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Ticket creation time" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update time" }
+      },
+      "required": ["title", "clientId", "status"]
     },
     "Job": {
       "title": "Job",
-      "description": "A job assigned to an engineer.",
+      "description": "A job opportunity posted by an admin",
       "type": "object",
       "properties": {
-        "id": { "type": "string" },
-        "ticketId": { "type": "string" },
-        "engineerUid": { "type": "string" },
-        "status": { "type": "string", "enum": ["assigned", "in-progress", "completed"] },
-        "completedAt": { "type": "string", "format": "date-time" }
-      }
+        "title": { "type": "string", "description": "Job title" },
+        "description": { "type": "string", "description": "Job description" },
+        "status": { "type": "string", "enum": ["Active", "Closed", "Draft"], "description": "Job status" },
+        "country": { "type": "string", "description": "Country" },
+        "city": { "type": "string", "description": "City" },
+        "rate": { "type": "string", "description": "Payment rate" },
+        "currency": { "type": "string", "description": "Currency" },
+        "serviceType": { "type": "string", "description": "Service type" },
+        "technicianType": { "type": "string", "description": "Technician type" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Posting time" }
+      },
+      "required": ["title", "status"]
+    },
+    "Application": {
+      "title": "Application",
+      "description": "An application by an engineer for a job",
+      "type": "object",
+      "properties": {
+        "jobId": { "type": "string", "description": "ID of the job" },
+        "engineerId": { "type": "string", "description": "UID of the engineer" },
+        "status": { "type": "string", "enum": ["Pending", "Accepted", "Rejected"], "description": "Application status" },
+        "appliedAt": { "type": "string", "format": "date-time", "description": "Application time" }
+      },
+      "required": ["jobId", "engineerId", "status"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A chat message between users",
+      "type": "object",
+      "properties": {
+        "senderId": { "type": "string", "description": "UID of the sender" },
+        "receiverId": { "type": "string", "description": "UID of the receiver" },
+        "text": { "type": "string", "description": "Message content" },
+        "timestamp": { "type": "string", "format": "date-time", "description": "Time sent" },
+        "read": { "type": "boolean", "description": "Whether the message has been read" }
+      },
+      "required": ["senderId", "receiverId", "text", "timestamp"]
     }
   },
   "firestore": {
-    "/users/{userId}": {
-      "schema": "User",
-      "description": "User profile documents."
-    },
-    "/tickets/{ticketId}": {
-      "schema": "Ticket",
-      "description": "Service tickets."
-    },
-    "/jobs/{jobId}": {
-      "schema": "Job",
-      "description": "Assigned jobs."
-    }
+    "/users/{userId}": { "schema": "User", "description": "User profiles" },
+    "/tickets/{ticketId}": { "schema": "Ticket", "description": "Service tickets" },
+    "/jobs/{jobId}": { "schema": "Job", "description": "Job opportunities" },
+    "/applications/{applicationId}": { "schema": "Application", "description": "Job applications" },
+    "/messages/{messageId}": { "schema": "Message", "description": "Chat messages" }
   }
 }
