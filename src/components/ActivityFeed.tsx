@@ -29,7 +29,12 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({ userId, role }) => {
     }
 
     const path = "activities";
-    let q = query(collection(db, path), orderBy("timestamp", "desc"), limit(10));
+    let q;
+    if (role === 'admin') {
+      q = query(collection(db, path), orderBy("timestamp", "desc"), limit(10));
+    } else {
+      q = query(collection(db, path), where("userId", "==", userId), orderBy("timestamp", "desc"), limit(10));
+    }
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const activityList = snapshot.docs.map(doc => ({

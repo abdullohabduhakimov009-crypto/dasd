@@ -35,11 +35,11 @@
       "description": "A service ticket logged by a client",
       "type": "object",
       "properties": {
-        "title": { "type": "string", "description": "Ticket title" },
+        "subject": { "type": "string", "description": "Ticket subject" },
         "description": { "type": "string", "description": "Detailed description" },
-        "status": { "type": "string", "enum": ["Open", "Assigned", "In Progress", "Completed", "Cancelled"], "description": "Ticket status" },
+        "status": { "type": "string", "enum": ["Pending", "Open", "Assigned", "In Progress", "Completed", "Cancelled", "Rejected"], "description": "Ticket status" },
         "priority": { "type": "string", "enum": ["Low", "Medium", "High", "Critical"], "description": "Ticket priority" },
-        "clientId": { "type": "string", "description": "UID of the client who created the ticket" },
+        "authorUid": { "type": "string", "description": "UID of the client who created the ticket" },
         "engineerId": { "type": "string", "description": "UID of the engineer assigned to the ticket" },
         "serviceType": { "type": "string", "description": "Type of service requested" },
         "country": { "type": "string", "description": "Country of service" },
@@ -50,7 +50,7 @@
         "createdAt": { "type": "string", "format": "date-time", "description": "Ticket creation time" },
         "updatedAt": { "type": "string", "format": "date-time", "description": "Last update time" }
       },
-      "required": ["title", "clientId", "status"]
+      "required": ["subject", "authorUid", "status"]
     },
     "Job": {
       "title": "Job",

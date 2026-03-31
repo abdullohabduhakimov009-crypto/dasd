@@ -2449,37 +2449,37 @@ const SignUpModal = ({ isOpen, onClose, onLoginClick, onEngineerContinue, onClie
       setIsLoading(true);
       setError('');
       
-      const uid = uuidv4();
-      const userData = {
-        uid: uid,
-        email: formData.companyEmail,
-        companyName: formData.companyName,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        name: `${formData.firstName} ${formData.lastName}`,
-        country: formData.country?.label || '',
-        companySize: formData.companySize,
-        role: 'client',
-        status: 'Active',
-        createdAt: serverTimestamp()
-      };
-
-      // Optimistically transition UI immediately
-      onClientContinue(userData);
-      onClose();
-
-      // Perform signup and data persistence in background
+      // Perform signup and data persistence
       const performSignup = async () => {
         try {
-          // Create Firebase Auth user
-          await createUserWithEmailAndPassword(auth, formData.companyEmail, formData.password, 'client', `${formData.firstName} ${formData.lastName}`, uid);
+          // Create Firebase Auth user first to get the correct UID
+          const authResult = await createUserWithEmailAndPassword(auth, formData.companyEmail, formData.password, 'client', `${formData.firstName} ${formData.lastName}`);
+          const uid = authResult.user.uid;
 
-          // Create Firestore document in background
-          setDoc(doc(db, "users", uid), userData).catch(err => console.error("Background setDoc error:", err));
+          const userData = {
+            uid: uid,
+            email: formData.companyEmail,
+            companyName: formData.companyName,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            name: `${formData.firstName} ${formData.lastName}`,
+            country: formData.country?.label || '',
+            companySize: formData.companySize,
+            role: 'client',
+            status: 'Active',
+            createdAt: serverTimestamp()
+          };
+
+          // Create Firestore document with the Auth UID
+          await setDoc(doc(db, "users", uid), userData);
+
+          // Transition UI
+          onClientContinue(userData);
+          onClose();
         } catch (err: any) {
           console.error("Client signup error:", err);
           setError(err.message || "Failed to create client account");
-          // Rollback state
+          // Rollback state if needed
           setIsClientLoggedIn(false);
           setCurrentPage('landing');
         } finally {
